@@ -1,0 +1,211 @@
+---
+title: "Data Analytics for Business"
+author: "Felipe Nery Da Silva"
+date: "31/08/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Study Cases exercises:
+
+## Question 1
+
+A company producing snack foods uses an automated system to package 200g packets of chips. 
+Management must ensure that the system (machine) is working properly; consistently underweight 
+packets will result in consumer dissatisfaction, whilst consistently overweight packets result 
+in additional costs being absorbed by the company. One of the specification requirements for the 
+machine to be deemed to be working correctly is that the mean weight of the packets of chips is 200g. 
+The quality assurance department obtained a random sample of 80 packets of chips and measured the 
+content (in grams) of each packet in order to test the mean weight. The data is contained in file 
+“Question1.csv”.
+
+**(i) Construct the 95% confidence interval for the population mean weight of the packets of chips.** 
+```{r}
+#read data
+Data1 = read.csv('Question1(4).csv')
+summary(Data1)
+```
+```{r}
+#apply t-test
+t.test(Data1$Weight, alternative ="two.sided", mu=200, conf.level = 0.95)
+```
+```{r}
+# Check if data is normally distribuited 
+qqnorm(Data1$Weight, main="")
+```
+
+**(ii) What assumptions need to be met for this interval to be valid?** 
+
+(a) The observations are assumed to be independent, as it was a random sample of 80 packets; 
+and
+(b) The sampling distribution of the sample mean weight of the packets of chips follow a normal
+distribuition. The QQ plot confirms the collected data is normally distribuited. 
+
+
+**(iii) Interpret the 95% confidence interval in words.** 
+
+I am 95% confident that the weight of the packed chips is between 197.86g and 198.35g.
+
+**(iv) Explain, using support from the 95% confidence interval, what you would conclude about** 
+**whether the company’s system is meeting the specification requirement that the mean weight** 
+**of the packets of chips is 200g.**
+
+According to the collected samples, I am 95% confident that the mean weight of each packet of chips 
+is in between 197.86g and 198.35g. The results confirms that the company's system is not meeting the 
+required specification of 200g.
+
+
+## Question 2
+
+Two software auditing systems (System A and System B) were assessed for their ease of use by 
+comparing the times taken by people (auditors) to complete a series of tasks using each system. 
+A random sample of 100 auditors was selected and each auditor was assigned to a different randomly 
+selected task. Each auditor used both systems A and B to complete his/her designated task. The two 
+times were recorded (in minutes) for each auditor. The data is contained in file “Question2.csv”.
+
+Implement the following six steps to test whether there is a difference, at a 5% significance level, 
+between the ease of use of the two systems based upon the mean times to complete the tasks.
+
+```{r}
+Data2 = read.csv('Question2(4).csv')
+Data2
+```
+
+**(i) Define the parameters and state the null and alternative hypothesis.** 
+
+H0: mu_dif = 0 
+
+HA: mu_dif ≠ 0 at 5% significance level.
+
+Where H0: mu_dif = 0 is the null hypothesis and states that there is no difference between the 
+mean time ease of use of the two systems to complete the tasks. 
+The HA: mu_dif ≠ 0 is the alternative hypothesis that there is a difference between mean times 
+for the two system to be completed.  
+
+**(ii) Check the assumptions for this hypothesis test.** 
+
+We assume an **independence of observations**, as a random sample of 100 auditors was selected 
+and each auditor was assigned to a different randomly selected task.
+
+Also, the sampling distribution of the mean time taken by the people who completed the task is
+normally distributed. This assumption can be confirmed by checking the QQ plot bellow.
+
+```{r}
+Data2$diff <- Data2$B-Data2$A
+qqnorm(Data2$diff)
+qqline(Data2$diff, col="red")
+```
+
+As expected the QQ plot above confirms that the time taken by each group of auditors who completed 
+the tasks is normal.  
+
+**(iii) Find the test statistic.** 
+
+```{r}
+t.test(x=Data2$A, y=Data2$B, mu=0, paired=TRUE)
+```
+
+The Test statistic is = 2.956
+
+**(iv) State the null distribution.** 
+
+df = 99 (Degrees of Freedom)
+
+**(v) Calculate the p-value.**
+
+The p-value is the probability of obtaining an outcome as or more extreme than that which we observed.
+p-value = P(t99 < −2.956) + P(t99 > 2.956) (note that this is a 2 tailed test)
+= 2 × P(t99 < 2.956) 
+p-value= 0.003896
+
+**(vi) Write the conclusion in plain language.** 
+
+At 5% significance level we reject the null hypothesis and confirm that there is difference between 
+the mean time taken by the auditors to complete the tasks of ease of use for the two systems (System 
+A and System B). The p-value = 0.003896 is small and less than the chosen significance level. 
+
+## Question 3 
+
+In a study of multifunction inject printers, a random sample of 30 all-in-one printers were selected from a supplier and their printing rates (in pages per minute) and retail prices (in dollars) were recorded. The data is contained in file “Question3.csv”: Columns A and B are the printing rates and the printer prices, respectively. 
+
+```{r}
+#Checking the data
+Data3 = read.csv('Question3(1).csv')
+Data3
+```
+
+**(i) Does the scatterplot suggest a linear relationship between printing price and printer rate?** 
+
+```{r}
+plot(Price~Rate, data=Data3)
+```
+
+Yes. The graph shows a relative positive linear relationship between the two variables Rate and Price.
+
+**(ii) Fit a simple linear regression model with printer price as the response variable and printing rate as the predictor variable. Write down the regression equation and interpret the numbers in the equation.** 
+
+```{r}
+# fitting the linear regression model
+Data3lm <- lm(Price~Rate, data=Data3)
+summary(Data3lm)
+```
+
+Y_hat = β0 + β1Xi = 41.922 + 55.111*X,
+
+Where Y_hat is the predicted retail price and X is the printing rate. This means that the retail price is predicted to increase on average by $55.11 for each additional unit of printing rates. The intercept of 41.922 is the predicted value of retail Price when the printing rate is equal to zero.
+
+The R-squared:  0.8025 in this case indicates that 80% of the variation of the printer retail prices can be expained by the model.
+
+**(iii) Use the fitted regression equation to estimate the price of a printer with a printing rate of 2 pages per minute.** 
+
+Y_hat = β0 + β1Xi = 41.922 + 55.111*2 = 152.14
+
+For a printer with a printing rate of 2 pages per minute, the estimate retail price is $152.14.
+
+**(iv) Is there sufficient evidence that there is a relationship between printer price and printing rate? Be sure to state the null and alternative hypotheses, the p-value and an appropriate conclusion.** 
+
+H0: β1 = 0, there is no relationship between printer price and printing rate.
+
+HA: β1 ≠ 0, there is a relationship between printer price and printing rate.
+
+The test statistic is t = 10.665.
+
+The very small p-value = 2.28e-11.
+
+This leads me to reject the null hypothesis H0, and conclude that there is a statistically significant
+relationship between printer retail price and printing rate.
+
+Finally, I will investigate the residual plots from the regression model.
+
+```{r}
+par(mfrow=c(2,2))
+plot(Data3lm)
+```
+
+The residual vs Fitted plot shows a random scatter of points and it does not appear to have any systematic patter. Apart from an outlier (observation 29) it indicates that there is information in the residuals. 
+
+The residual normal QQ plot confirms the assumption that the residuals are following a normal distribution. 
+
+In the third diagnostic plot, the square root of the absolute value of the (standardized) residuals
+are plotted against the fitted values. In this case of printer retail price and printer rates it confirms our assumption that the residuals constant variance. However it again show the presence of outliers observation 24 and 29.
+
+The last diagnostic plot Residual vs Leverage confirms the presence of outliers and measures their leverage power using the Cook's distance. Here we can notice a very small influence by observation 24. 
+
+In conclusion, according to the residual analysis we are satisfied with the use of the regression method for this study of multifunction inject printer. Although, further investigation should be performed to investigate its small numbers of outliears. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
