@@ -1,8 +1,8 @@
-# Analytics for Business 
+# Data Analytics for Business Intelligence
  
- Repository containing a project in R of Data Analytics exercises questions for Business.<br>
+ Repository containing a project in R of Data Analytics exercises questions for Business Intelligence.<br>
  
- The project was part of my Analytics for Business course from the University of Newcastle (Uon) Master of Data Science Degree. Presented in the form of RMarkdown.
+ The project was part of my Analytics for Business Intelligence course from the University of Newcastle (Uon) Master of Data Science Degree. Presented in the form of RMarkdown.
  
  ##  Question 1<br>
 
